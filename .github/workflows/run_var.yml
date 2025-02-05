@@ -60,7 +60,7 @@ jobs:
           # Get target branch
           BRANCH=${{ github.ref_name }}
           
-          latest_tag=$(git tag --sort=-v:refname | grep -E "^${BASE_VERSION}\.[0-9]+$" | head -n 1)
+          latest_tag=$(git tag --sort=-v:refname | grep -E "^${env.BASE_VERSION}\.[0-9]+$" | head -n 1)
           echo "latest_tag=${latest_tag}" >> $GITHUB_ENV
           echo "Latest tag: $latest_tag"
 
