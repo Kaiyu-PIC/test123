@@ -31,17 +31,23 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Load BASE_VERSION from JSON variable
+        env:
+          JSON: ${{ vars.BRANCH_TO_VERSION }}
         run: |
           BRANCH="${{ github.ref_name }}"
-          JSON='${{ vars.BRANCH_TO_VERSION }}'
-
+      
+          echo "BRANCH: $BRANCH"
+          echo "JSON: $JSON"
+      
           BASE_VERSION=$(echo "$JSON" | jq -r --arg branch "$BRANCH" '.[$branch] // empty')
-
+      
+          echo "Extracted BASE_VERSION: $BASE_VERSION"
+      
           if [[ -z "$BASE_VERSION" ]]; then
             echo "Branch $BRANCH not handled"
             exit 1
           fi
-
+      
           echo "BASE_VERSION=$BASE_VERSION" >> $GITHUB_ENV
           echo "BASE_VERSION=$BASE_VERSION"
 
