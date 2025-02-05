@@ -1,0 +1,61 @@
+name: Auto Versioning by Branch
+
+on:
+  push:
+    branches:
+      - main
+      - feature/*
+      
+jobs:
+  bump-version:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Extract Branch Name
+        id: branch
+        run: echo "branch_name=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
+
+      - name: Determine Version Prefix
+        id: version_prefix
+        run: |
+          if [[ "$branch_name" == "main" ]]; then
+            echo "version_prefix=0.0" >> $GITHUB_ENV
+          elif [[ "$branch_name" == feature/* ]]; then
+            feature_name=$(echo "$branch_name" | cut -d'/' -f2)
+            case "$feature_name" in
+              "A") echo "version_prefix=0.1" >> $GITHUB_ENV ;;
+              "B") echo "version_prefix=0.2" >> $GITHUB_ENV ;;
+              *) echo "version_prefix=0.9" >> $GITHUB_ENV ;; # Default for unknown feature branches
+            esac
+          fi
+
+      - name: Get Latest Tag
+        id: latest_tag
+        run: |
+          latest_tag=$(git tag -l "${version_prefix}.*" --sort=-v:refname | head -n 1)
+          if [[ -z "$latest_tag" ]]; then
+            echo "latest_version=${version_prefix}.0" >> $GITHUB_ENV
+          else
+            echo "latest_version=$latest_tag" >> $GITHUB_ENV
+          fi
+
+      - name: Bump Patch Version
+        id: bump_version
+        run: |
+          major_minor="${latest_version%.*}"
+          patch="${latest_version##*.}"
+          new_patch=$((patch + 1))
+          new_version="${major_minor}.${new_patch}"
+          echo "new_version=$new_version" >> $GITHUB_ENV
+
+      - name: Create New Tag
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git tag $new_version
+          git push origin $new_version
+
+      - name: Output New Version
+        run: echo "New version tagged: $new_version"
