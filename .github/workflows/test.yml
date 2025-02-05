@@ -24,6 +24,6 @@ jobs:
       - name: Get latest tag
         id: get_tag
         run: |
-          tag=(git tag --sort=-v:refname | grep -E '^0\.1\.[0-9]+$' | head -n 1)
+          tag=$(git tag --sort=-v:refname | grep -E '^0\.1\.[0-9]+$' | head -n 1)
           echo $tag
           
