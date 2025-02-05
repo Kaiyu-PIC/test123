@@ -63,7 +63,7 @@ jobs:
 
           # Debugging output
           echo "BRANCH: $BRANCH"
-          echo "BASE_VERSION: $BASE_VERSION"
+          echo "^${BASE_VERSION}\.[0-9]+$"
           
           latest_tag=$(git tag --sort=-v:refname | grep -E "^${BASE_VERSION}\.[0-9]+$" | head -n 1)
           echo "latest_tag=${latest_tag}" >> $GITHUB_ENV
