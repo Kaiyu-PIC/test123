@@ -43,6 +43,7 @@ jobs:
           fi
 
           echo "BASE_VERSION=$BASE_VERSION" >> $GITHUB_ENV
+          echo "BASE_VERSION=$BASE_VERSION"
 
       - name: Fetch all tags
         run: git fetch --tags
