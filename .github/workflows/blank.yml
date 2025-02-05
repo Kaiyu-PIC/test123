@@ -29,6 +29,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
 
       - name: Fetch all tags
         run: git fetch --tags
@@ -36,7 +38,7 @@ jobs:
       - name: Get latest tag
         id: get_tag
         run: |
-          VERSION_FILE="version"  # Path to your version file
+          VERSION_FILE="version.txt"  # Path to your version file
           if [ -f "$VERSION_FILE" ]; then
             latest_tag=$(git tag --sort=-v:refname | grep -E '^0\.1\.[0-9]+$' | head -n 1)
           else
@@ -59,7 +61,6 @@ jobs:
           # Increment the PATCH version
           NEW_PATCH=$((PATCH + 1))
           latest_tag="${MAJOR}.${MINOR}.${NEW_PATCH}"
-          echo "${MAJOR}.${MINOR}.${latest_tag}"
           echo "${latest_tag}"
           # Export the new version
           echo "latest_tag=${latest_tag}" >> $GITHUB_ENV
