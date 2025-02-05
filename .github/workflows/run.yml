@@ -21,10 +21,13 @@ jobs:
         with:
           fetch-depth: 0  # 確保可以獲取所有 tags
 
+      - name: Fetch All Tags
+        run: git fetch --tags
+
       - name: Get Latest Tag
         id: get_tag
         run: |
-          # 取得目前分支
+          # 取得當前分支
           BRANCH=${{ github.ref_name }}
           
           # 設定初始版本
@@ -50,13 +53,15 @@ jobs:
           echo "New tag: $NEW_TAG"
           echo "new_tag=$NEW_TAG" >> $GITHUB_ENV
 
-      - name: Create Tag
+      - name: Configure Git
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
+      - name: Create and Push Tag
+        run: |
           git tag ${{ env.new_tag }}
-          git push origin ${{ env.new_tag }}
+          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git ${{ env.new_tag }}
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
