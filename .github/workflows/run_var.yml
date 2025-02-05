@@ -59,7 +59,7 @@ jobs:
         run: |
           # Get target branch
           BRANCH=${{ github.ref_name }}
-          BASE_VERSION="${BASE_VERSION}"
+          BASE_VERSION="$BASE_VERSION"
 
           # Debugging output
           echo "BRANCH: $BRANCH"
