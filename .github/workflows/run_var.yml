@@ -53,14 +53,6 @@ jobs:
           # Get target branch
           BRANCH=${{ github.ref_name }}
           
-          # Define version of branch
-          case "$BRANCH" in
-            "main") BASE_VERSION="0.0";;
-            "feature/implement_langgraph") BASE_VERSION="0.1";;
-            "feature/fun_B") BASE_VERSION="0.2";;
-            *) echo "Branch $BRANCH not handled"; exit 1;;
-          esac
-          
           latest_tag=$(git tag --sort=-v:refname | grep -E "^${BASE_VERSION}\.[0-9]+$" | head -n 1)
           echo "latest_tag=${latest_tag}" >> $GITHUB_ENV
           echo "Latest tag: $latest_tag"
