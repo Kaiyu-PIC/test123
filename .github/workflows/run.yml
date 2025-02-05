@@ -36,7 +36,10 @@ jobs:
           esac
 
           # 找到最近的 tag
+          LATEST_TAG=$(git tag --sort=-v:refname | grep -E '^0\.1\.[0-9]+$' | head -n 1)
+          echo $LATEST_TAG
           LATEST_TAG=$(git tag --list "v${BASE_VERSION}.*" --sort=-v:refname | head -n 1)
+          echo $LATEST_TAG
 
           # 如果沒有 tag，從 v${BASE_VERSION}.0 開始
           if [[ -z "$LATEST_TAG" ]]; then
