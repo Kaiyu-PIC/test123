@@ -1,0 +1,29 @@
+name: git rev-list
+
+# Controls when the workflow will run
+on:
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  build:
+    # if: github.event.pull_request.merged == true || github.event_name == 'push'
+    #    if: (!(github.event.action == 'closed' && github.event.pull_request.merged != true))
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      repository-projects: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Fetch all tags
+        run: git fetch --tags
+      
+      - name: Get latest tag
+        id: get_tag
+        run: |
+          tag=$(git tag --sort=-v:refname | grep -E '^0\.1\.[0-9]+$' | head -n 1)
+          echo $tag
+          
