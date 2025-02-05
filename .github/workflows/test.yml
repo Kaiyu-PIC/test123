@@ -24,6 +24,5 @@ jobs:
       - name: Get latest tag
         id: get_tag
         run: |
-          latest_tag=$(git describe --tags `git rev-list --tags`)
-          echo $latest_tag
+          echo $(git describe --tags `git rev-list --tags --max-count=1`)
           
