@@ -30,6 +30,20 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Load BASE_VERSION from JSON variable
+        run: |
+          BRANCH="${{ github.ref_name }}"
+          JSON='${{ vars.BRANCH_TO_VERSION }}'
+
+          BASE_VERSION=$(echo "$JSON" | jq -r --arg branch "$BRANCH" '.[$branch] // empty')
+
+          if [[ -z "$BASE_VERSION" ]]; then
+            echo "Branch $BRANCH not handled"
+            exit 1
+          fi
+
+          echo "BASE_VERSION=$BASE_VERSION" >> $GITHUB_ENV
+
       - name: Fetch all tags
         run: git fetch --tags
       
@@ -49,6 +63,7 @@ jobs:
           
           latest_tag=$(git tag --sort=-v:refname | grep -E "^${BASE_VERSION}\.[0-9]+$" | head -n 1)
           echo "latest_tag=${latest_tag}" >> $GITHUB_ENV
+          echo "Latest tag: $latest_tag"
 
       - name: Increase version
         if: ((github.event.action == 'closed' && github.event.pull_request.merged == true) || github.event_name == 'workflow_dispatch')
