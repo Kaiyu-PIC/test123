@@ -38,7 +38,7 @@ jobs:
       - name: Get latest tag
         id: get_tag
         run: |
-          VERSION_FILE="version.txt"  # Path to your version file
+          VERSION_FILE="version"  # Path to your version file
           if [ -f "$VERSION_FILE" ]; then
             latest_tag=$(git tag --sort=-v:refname | grep -E '^0\.1\.[0-9]+$' | head -n 1)
           else
