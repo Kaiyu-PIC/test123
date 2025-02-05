@@ -66,6 +66,9 @@ jobs:
           MAJOR=$(echo "${{ env.latest_tag }}" | cut -d. -f1) # | tr -d 'v')
           MINOR=$(echo "${{ env.latest_tag }}" | cut -d. -f2)
           PATCH=$(echo "${{ env.latest_tag }}" | cut -d. -f3)
+
+          # Ensure PATCH has a default value of 0 if it's empty
+          PATCH=${PATCH:-0}
           
           # Increment the PATCH version
           NEW_PATCH=$((PATCH + 1))
