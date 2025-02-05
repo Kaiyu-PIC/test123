@@ -49,11 +49,11 @@ jobs:
             *) echo "Branch $BRANCH not handled"; exit 1;;
           esac
           
-          if [ -f "$BRANCH" ]; then
-            latest_tag=$(git tag --sort=-v:refname | grep -E "^${BASE_VERSION}\.[0-9]+$" | head -n 1)
-          else
-            latest_tag=$(git for-each-ref --sort=-creatordate --format '%(refname:short)' refs/tags | head -n 1)
-          fi
+          # if [ -f "$BRANCH" ]; then
+          latest_tag=$(git tag --sort=-v:refname | grep -E "^${BASE_VERSION}\.[0-9]+$" | head -n 1)
+          # else
+          #   latest_tag=$(git for-each-ref --sort=-creatordate --format '%(refname:short)' refs/tags | head -n 1)
+          # fi
           echo "latest_tag=${latest_tag}" >> $GITHUB_ENV
           # echo "The latest tag is ${{ env.latest_tag }}"
           echo $(git describe --tags `git rev-list --tags --max-count=1`)
